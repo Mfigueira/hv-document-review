@@ -15,7 +15,7 @@
 | Lint/format | **ESLint + Prettier** | Standard hygiene. |
 
 > Pin exact versions at implementation time (`npm create vite@latest` ? `react-ts`,
-> then add deps via the package manager; verify `@react-pdf-viewer` version + MIT
+> then add deps via **npm** (`npm install`); verify `@react-pdf-viewer` version + MIT
 > license at build time).
 
 ## 2. Routing (react-router)

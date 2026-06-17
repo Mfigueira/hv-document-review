@@ -2,7 +2,7 @@
 
 This file contains **copy-paste prompts** to build the HomeVision Review Page from
 the plan in this `plan/` folder. The work is split into **5 sequential stages**,
-each sized for its own **fresh context window**. Run them **in order** ÔøΩ each
+each sized for its own **fresh context window**. Run them **in order** ù each
 stage assumes the previous one is finished and working.
 
 ## How to use
@@ -21,7 +21,8 @@ stage assumes the previous one is finished and working.
 
 - Stack: **React 18 + TypeScript + Vite**, **Tailwind CSS**, **Zustand** (+`persist`),
   **react-router-dom**, **`@react-pdf-viewer`** (core + search), **Vitest + RTL**.
-- Add dependencies with the package manager (latest stable) ÔøΩ do **not** hand-write versions.
+- Use **npm** as the package manager (commit `package-lock.json`; do not use
+  yarn/pnpm). Add dependencies via `npm install <pkg>` at latest stable ù do **not** hand-write versions.
 - Only build what's in scope: the **Review Page** + minimal **Submitted Page** +
   out-of-scope **placeholder** routes (`/upload`, `/processing`). Do not build the
   Upload/Processing flows.
@@ -32,7 +33,7 @@ stage assumes the previous one is finished and working.
 
 ---
 
-## STAGE 1 ÔøΩ Scaffold, routing, layout shell, data layer & store
+## STAGE 1 ù Scaffold, routing, layout shell, data layer & store
 
 ```text
 You are implementing the HomeVision "Review Page" take-home challenge. The repo
@@ -41,9 +42,9 @@ root is the current directory and already contains a `plan/` folder and a
 
 FIRST, read these plan docs fully and follow them as the source of truth:
 - plan/README.md
-- plan/01-challenge-analysis.md   (data model in ÔøΩ5; business rule; scope)
-- plan/02-architecture.md         (ÔøΩ1 stack, ÔøΩ2 routing, ÔøΩ3 structure, ÔøΩ4 tree,
-                                    ÔøΩ5 store, ÔøΩ6 data flow, ÔøΩ11 hosting)
+- plan/01-challenge-analysis.md   (data model in ù5; business rule; scope)
+- plan/02-architecture.md         (ù1 stack, ù2 routing, ù3 structure, ù4 tree,
+                                    ù5 store, ù6 data flow, ù11 hosting)
 - plan/04-implementation-plan.md  (Stage 1)
 
 GOAL OF THIS STAGE: stand up the project skeleton end-to-end (no PDF, no issue
@@ -55,7 +56,7 @@ DO THE FOLLOWING:
    Testing Library, react-router-dom, zustand. Add npm scripts: dev, build,
    preview, lint, test. Configure a Tailwind theme with severity colors
    (critical=red, major=amber/orange, minor=slate) and a status palette.
-3. Create src/types/review.ts with the exact types from plan doc 01 ÔøΩ5
+3. Create src/types/review.ts with the exact types from plan doc 01 ù5
    (Severity, ReviewStatus, Issue, DocumentPage, ReviewDocument, ReviewUser, Review).
 4. Copy challenge-spec/example_document.pdf into public/.
 5. Create src/mocks/review_v2_needs_revision.json by copying
@@ -66,14 +67,14 @@ DO THE FOLLOWING:
 6. Create src/api/reviewApi.ts: getReview(scenario) returns the right mock after a
    ~500ms delay; submitReview(id) resolves {ok:true} after ~600ms. (Backend is
    skipped per the brief.)
-7. Create the Zustand store src/store/useReviewStore.ts per plan doc 02 ÔøΩ5
+7. Create the Zustand store src/store/useReviewStore.ts per plan doc 02 ù5
    (review, status, scenario, severityFilter, selectedPage, selectedIssueId,
    submitting, resolvedIssueIds, and the listed actions). Use the `persist`
    middleware persisting ONLY resolvedIssueIds and scenario, keyed sensibly;
    resolvedIssueIds is keyed by `${reviewId}:v${version}`.
 8. Create src/hooks/useReview.ts that loads the review for the active scenario into
    the store (handles loading/error/ready states).
-9. Routing per plan doc 02 ÔøΩ2 & ÔøΩ4 using createBrowserRouter + RouterProvider in
+9. Routing per plan doc 02 ù2 & ù4 using createBrowserRouter + RouterProvider in
    src/main.tsx and src/router.tsx:
    - AppLayout (components/layout/AppLayout.tsx) = Header + <Outlet/> + Footer
      (+ a DevPanel placeholder slot).
@@ -82,7 +83,7 @@ DO THE FOLLOWING:
      "/processing" -> pages/ProcessingPage.tsx (out-of-scope stub).
    - For now ReviewPage can render the loaded review's name/version/status and a
      placeholder for the two panes; SubmittedPage/Upload/Processing are simple
-     stubs (Upload/Processing clearly say "Out of scope ÔøΩ placeholder").
+     stubs (Upload/Processing clearly say "Out of scope ù placeholder").
 10. Header.tsx shows: product name "Document Review", file name, v{version},
     status badge, assignee (first + last name). Footer.tsx minimal.
 11. Make the shell responsive (mobile-first) with a two-column layout placeholder
@@ -93,7 +94,7 @@ DONE WHEN:
   needs_revision mock; navigating to /submitted, /upload, /processing works.
 - Refreshing /submitted does not 404 in dev.
 - lint, build, and test (even if only a trivial smoke test) all pass.
-- No PDF rendering or issue logic yet ÔøΩ that's later stages.
+- No PDF rendering or issue logic yet ù that's later stages.
 
 Do NOT implement: the issues panel logic, PDF viewer, search, dev panel behavior,
 or CTA gating. Stop after Stage 1 and summarize what you built + how to run it.
@@ -101,15 +102,15 @@ or CTA gating. Stop after Stage 1 and summarize what you built + how to run it.
 
 ---
 
-## STAGE 2 ÔøΩ Issues panel + business rule + persistence
+## STAGE 2 ù Issues panel + business rule + persistence
 
 ```text
 You are continuing the HomeVision "Review Page" challenge. Stage 1 (scaffold,
 routing, store, mocks, layout) is complete and working.
 
 FIRST, read these plan docs and follow them as the source of truth:
-- plan/01-challenge-analysis.md   (ÔøΩ3 business rule, ÔøΩ6 derived values)
-- plan/02-architecture.md         (ÔøΩ5 state + CTA logic)
+- plan/01-challenge-analysis.md   (ù3 business rule, ù6 derived values)
+- plan/02-architecture.md         (ù5 state + CTA logic)
 - plan/03-design-options.md        (Option A "CHOSEN" + shared elements)
 - plan/04-implementation-plan.md  (Stage 2)
 
@@ -117,7 +118,7 @@ GOAL OF THIS STAGE: implement the issues panel and the full submission business
 rule, with checkbox resolution persisted to localStorage. (Still no PDF viewer.)
 
 DO THE FOLLOWING:
-1. Create src/lib/issues.ts with PURE functions (no React) per plan doc 02 ÔøΩ5:
+1. Create src/lib/issues.ts with PURE functions (no React) per plan doc 02 ù5:
    - getCounts(issues) -> {critical, major, minor}
    - getBlockingIssues(issues) -> critical + major issues
    - getBlockingRemaining(issues, resolvedIds) -> count of unresolved critical+major
@@ -160,7 +161,7 @@ after Stage 2 and summarize.
 
 ---
 
-## STAGE 3 ÔøΩ PDF viewer + Cmd/Ctrl+F search (the risky part ÔøΩ isolate it)
+## STAGE 3 ù PDF viewer + Cmd/Ctrl+F search (the risky part ù isolate it)
 
 ```text
 You are continuing the HomeVision "Review Page" challenge. Stages 1-2 are done
@@ -168,10 +169,10 @@ You are continuing the HomeVision "Review Page" challenge. Stages 1-2 are done
 
 FIRST, read these plan docs and follow them as the source of truth:
 - plan/01-challenge-analysis.md   (AC #1 about search)
-- plan/02-architecture.md         (ÔøΩ7 PDF + search, ÔøΩ8 issue?page linking)
+- plan/02-architecture.md         (ù7 PDF + search, ù8 issue?page linking)
 - plan/04-implementation-plan.md  (Stage 3)
 
-GOAL OF THIS STAGE: render the full PDF and satisfy AC #1 ÔøΩ searching text across
+GOAL OF THIS STAGE: render the full PDF and satisfy AC #1 ù searching text across
 the ENTIRE document via Cmd/Ctrl+F.
 
 DO THE FOLLOWING:
@@ -207,19 +208,19 @@ yet (Stage 4). Stop after Stage 3 and summarize, including any fallback used.
 
 ---
 
-## STAGE 4 ÔøΩ Linking, scenarios, dev panel, CTA outcomes, Submitted Page
+## STAGE 4 ù Linking, scenarios, dev panel, CTA outcomes, Submitted Page
 
 ```text
 You are continuing the HomeVision "Review Page" challenge. Stages 1-3 are done
 (scaffold/routing/store, issues + business rule, PDF viewer + Cmd/Ctrl+F search).
 
 FIRST, read these plan docs and follow them as the source of truth:
-- plan/02-architecture.md         (ÔøΩ2 routing, ÔøΩ4 tree, ÔøΩ5 CTA logic, ÔøΩ8 linking)
+- plan/02-architecture.md         (ù2 routing, ù4 tree, ù5 CTA logic, ù8 linking)
 - plan/03-design-options.md        (Submitted Page sketch + Dev panel sketch)
 - plan/04-implementation-plan.md  (Stage 4)
 - plan/05-open-questions-and-production.md (Q1 model, Q5 Submitted Page)
 
-GOAL OF THIS STAGE: connect everything ÔøΩ issue?document navigation, the two demo
+GOAL OF THIS STAGE: connect everything ù issue?document navigation, the two demo
 scenarios, the dev panel, the real CTA navigation, and the Submitted Page.
 
 DO THE FOLLOWING:
@@ -262,14 +263,14 @@ Stop after Stage 4 and summarize.
 
 ---
 
-## STAGE 5 ÔøΩ Responsive & a11y polish, tests, docs, deploy
+## STAGE 5 ù Responsive & a11y polish, tests, docs, deploy
 
 ```text
 You are finishing the HomeVision "Review Page" challenge. Stages 1-4 are complete
 and functional end-to-end.
 
 FIRST, read these plan docs and follow them as the source of truth:
-- plan/02-architecture.md         (ÔøΩ9 responsive, ÔøΩ10 a11y, ÔøΩ11 hosting)
+- plan/02-architecture.md         (ù9 responsive, ù10 a11y, ù11 hosting)
 - plan/04-implementation-plan.md  (Stage 5 + Definition of Done)
 - plan/05-open-questions-and-production.md (Parts 2 & 3 for the README write-up)
 
@@ -284,11 +285,11 @@ DO THE FOLLOWING:
    order, keyboard-operable checkboxes/cards), semantic landmarks, role="status" /
    aria-live on the submission bar, color contrast, severity conveyed by more than
    color, and prefers-reduced-motion handling.
-3. Tests: expand Vitest coverage ÔøΩ business rule (getCtaMode, getCanProceed,
+3. Tests: expand Vitest coverage ù business rule (getCtaMode, getCanProceed,
    counts, blocking), persistence behavior, and a couple of component tests
    (e.g. CTA disabled until blocking resolved; Submit navigates to /submitted).
 4. Gate the DevPanel behind an env flag (e.g. import.meta.env) so production builds
-   can hide it (or keep a subtle toggle for the demo ÔøΩ your call, documented).
+   can hide it (or keep a subtle toggle for the demo ù your call, documented).
 5. Write the top-level README.md (repo root, NOT in plan/): what the app is, how
    to run/build, the key decisions, the two demo scenarios, the development-approach
    narrative and the production-readiness checklist (summarize from plan doc 05
@@ -315,7 +316,7 @@ Summarize the final result and include the live URL and run instructions.
 
 ## Notes
 
-- If a stage runs long, it is safe to pause and resume within the same stage ÔøΩ the
+- If a stage runs long, it is safe to pause and resume within the same stage ù the
   boundaries above are the natural fresh-context split points.
 - If you (the planner) later change a decision, update the relevant `plan/` doc;
   the prompts deliberately defer detail to those docs so they stay in sync.
