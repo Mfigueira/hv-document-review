@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  /* Severity palette */
+  --color-severity-critical: #dc2626;
+  --color-severity-critical-bg: #fef2f2;
+  --color-severity-critical-border: #fca5a5;
+
+  --color-severity-major: #d97706;
+  --color-severity-major-bg: #fffbeb;
+  --color-severity-major-border: #fcd34d;
+
+  --color-severity-minor: #475569;
+  --color-severity-minor-bg: #f8fafc;
+  --color-severity-minor-border: #cbd5e1;
+
+  /* Status palette */
+  --color-status-on-review: #2563eb;
+  --color-status-submitted: #16a34a;
+  --color-status-processing: #9333ea;
+  --color-status-created: #6b7280;
+
+  /* Brand */
+  --color-brand: #1d4ed8;
+  --color-brand-light: #eff6ff;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    margin: 0;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      sans-serif;
+    background-color: #f9fafb;
+    color: #111827;
+    min-height: 100dvh;
+  }
+
+  #root {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
