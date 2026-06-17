@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useShallow } from 'zustand/react/shallow';
 import type { Review, Severity } from '../types/review';
 import { getReview, submitReview, type Scenario } from '../api/reviewApi';
 
@@ -109,11 +110,13 @@ export const useReviewStore = create<ReviewState>()(
   ),
 );
 
-/** Selector: resolved ids for the currently loaded review */
+/** Selector: resolved ids for the currently loaded review (shallow-compared to avoid infinite loops) */
 export function useResolvedIds(): string[] {
-  return useReviewStore((s) => {
-    if (!s.review) return [];
-    const key = resolvedKey(s.review);
-    return s.resolvedIssueIds[key] ?? [];
-  });
+  return useReviewStore(
+    useShallow((s) => {
+      if (!s.review) return [];
+      const key = resolvedKey(s.review);
+      return s.resolvedIssueIds[key] ?? [];
+    }),
+  );
 }

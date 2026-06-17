@@ -6,7 +6,10 @@ import { useReviewStore } from '../store/useReviewStore';
  * Re-loads whenever the scenario changes.
  */
 export function useReview() {
-  const { load, status, review, scenario } = useReviewStore();
+  const status = useReviewStore((s) => s.status);
+  const scenario = useReviewStore((s) => s.scenario);
+  const load = useReviewStore((s) => s.load);
+  const review = useReviewStore((s) => s.review);
 
   useEffect(() => {
     if (status === 'idle') {
