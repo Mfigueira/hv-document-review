@@ -62,8 +62,16 @@ export const useReviewStore = create<ReviewState>()(
           review.document.pdf_url = publicUrl(review.document.pdf_url);
           set({ review, status: 'ready', scenario: activeScenario });
         } catch (err) {
-          const message =
-            err instanceof ApiError ? err.message : 'Failed to load review. Please try again.';
+          let message = 'Failed to load review. Please try again.';
+          if (err instanceof ApiError) {
+            if (err.errorCode === 'REVIEW_NOT_FOUND') {
+              message = 'Review not found. The document may have been removed.';
+            } else if (err.errorCode === 'SCENARIO_REQUIRED') {
+              message = 'Invalid scenario. Please refresh and try again.';
+            } else {
+              message = err.message;
+            }
+          }
           set({ status: 'error', error: message });
         }
       },
@@ -105,8 +113,14 @@ export const useReviewStore = create<ReviewState>()(
           set({ submitting: false });
           return true;
         } catch (err) {
-          const message =
-            err instanceof ApiError ? err.message : 'Failed to submit review. Please try again.';
+          let message = 'Failed to submit review. Please try again.';
+          if (err instanceof ApiError) {
+            if (err.errorCode === 'ID_REQUIRED') {
+              message = 'Review session is invalid. Please refresh the page.';
+            } else {
+              message = err.message;
+            }
+          }
           set({ submitting: false, submitError: message });
           return false;
         }
