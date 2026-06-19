@@ -66,8 +66,6 @@ export const useReviewStore = create<ReviewState>()(
           if (err instanceof ApiError) {
             if (err.errorCode === 'REVIEW_NOT_FOUND') {
               message = 'Review not found. The document may have been removed.';
-            } else if (err.errorCode === 'SCENARIO_REQUIRED') {
-              message = 'Invalid scenario. Please refresh and try again.';
             } else {
               message = err.message;
             }
@@ -115,11 +113,7 @@ export const useReviewStore = create<ReviewState>()(
         } catch (err) {
           let message = 'Failed to submit review. Please try again.';
           if (err instanceof ApiError) {
-            if (err.errorCode === 'ID_REQUIRED') {
-              message = 'Review session is invalid. Please refresh the page.';
-            } else {
-              message = err.message;
-            }
+            message = err.message;
           }
           set({ submitting: false, submitError: message });
           return false;
