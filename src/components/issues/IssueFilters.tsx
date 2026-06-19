@@ -40,7 +40,7 @@ export function IssueFilters({ counts, active, onChange }: Props) {
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(value)}
-            className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors ${
+            className={`cursor-pointer flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors ${
               isActive ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
             }`}
           >

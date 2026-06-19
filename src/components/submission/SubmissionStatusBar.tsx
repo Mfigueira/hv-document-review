@@ -7,6 +7,7 @@ import {
   getCtaMode,
   getCanProceed,
 } from '../../lib/issues';
+import clsx from 'clsx';
 
 export function SubmissionStatusBar() {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ export function SubmissionStatusBar() {
 
           {/* Secondary hint */}
           {!isSubmitMode && (
-            <p className="text-xs text-amber-700/80">
+            <p className={`text-xs ${!isCleared ? 'text-amber-700/80' : 'text-gray-600/80'}`}>
               {isCleared
                 ? 'Click Re-upload to continue to the upload step.'
                 : `Resolve all ${counts.critical > 0 ? `${counts.critical} critical` : ''}${counts.critical > 0 && counts.major > 0 ? ' and ' : ''}${counts.major > 0 ? `${counts.major} major` : ''} issue${blockingTotal !== 1 ? 's' : ''} to enable re-upload. Minor issues may be ignored.`}
@@ -112,11 +113,14 @@ export function SubmissionStatusBar() {
             disabled={!canProceed || submitting}
             aria-describedby={!canProceed ? 'cta-tooltip' : undefined}
             title={!canProceed ? 'Resolve all critical & major issues first' : undefined}
-            className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-              canProceed && !submitting
-                ? 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500'
-                : 'cursor-not-allowed bg-gray-200 text-gray-400 shadow-none'
-            }`}
+            className={clsx(
+              'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2',
+              {
+                'cursor-pointer bg-green-600 text-white hover:bg-green-700':
+                  canProceed && !submitting,
+                'cursor-default bg-gray-200 text-gray-400 shadow-none': !canProceed || submitting,
+              },
+            )}
           >
             {submitting && (
               <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
