@@ -2,19 +2,21 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
 import type { Review, Severity } from '../types/review';
-import { getReview, submitReview, type Scenario } from '../api/reviewApi';
+import { getReview, submitReview, ApiError, type Scenario } from '../api/reviewApi';
 import { publicUrl } from '../lib/utils';
 
 interface ReviewState {
   // data
   review: Review | null;
   status: 'idle' | 'loading' | 'error' | 'ready';
+  error: string | null;
   scenario: Scenario;
   // ui
   severityFilter: Severity | 'all';
   selectedPage: number | null;
   selectedIssueId: string | null;
   submitting: boolean;
+  submitError: string | null;
   // resolution — persisted to localStorage, keyed by `${reviewId}:v${version}`
   resolvedIssueIds: Record<string, string[]>;
   // actions
@@ -23,7 +25,7 @@ interface ReviewState {
   toggleResolved: (issueId: string) => void;
   setFilter: (f: Severity | 'all') => void;
   selectIssue: (id: string | null) => void;
-  submit: () => Promise<void>;
+  submit: () => Promise<boolean>;
   resetResolved: () => void;
 }
 
@@ -36,22 +38,32 @@ export const useReviewStore = create<ReviewState>()(
     (set, get) => ({
       review: null,
       status: 'idle',
+      error: null,
       scenario: 'needs_revision',
       severityFilter: 'all',
       selectedPage: null,
       selectedIssueId: null,
       submitting: false,
+      submitError: null,
       resolvedIssueIds: {},
 
       load: async (scenario?: Scenario) => {
         const activeScenario = scenario ?? get().scenario;
-        set({ status: 'loading', review: null, selectedPage: null, selectedIssueId: null });
+        set({
+          status: 'loading',
+          review: null,
+          error: null,
+          selectedPage: null,
+          selectedIssueId: null,
+        });
         try {
           const review = await getReview(activeScenario);
           review.document.pdf_url = publicUrl(review.document.pdf_url);
           set({ review, status: 'ready', scenario: activeScenario });
-        } catch {
-          set({ status: 'error' });
+        } catch (err) {
+          const message =
+            err instanceof ApiError ? err.message : 'Failed to load review. Please try again.';
+          set({ status: 'error', error: message });
         }
       },
 
@@ -85,12 +97,17 @@ export const useReviewStore = create<ReviewState>()(
 
       submit: async () => {
         const { review } = get();
-        if (!review) return;
-        set({ submitting: true });
+        if (!review) return false;
+        set({ submitting: true, submitError: null });
         try {
           await submitReview(review.id);
-        } finally {
           set({ submitting: false });
+          return true;
+        } catch (err) {
+          const message =
+            err instanceof ApiError ? err.message : 'Failed to submit review. Please try again.';
+          set({ submitting: false, submitError: message });
+          return false;
         }
       },
 
