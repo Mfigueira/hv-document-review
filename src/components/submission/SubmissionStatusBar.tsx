@@ -1,12 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useReviewStore, useResolvedIds } from '../../store/useReviewStore';
-import {
-  getCounts,
-  getBlockingIssues,
-  getBlockingRemaining,
-  getCtaMode,
-  getCanProceed,
-} from '../../lib/issues';
+import { deriveReviewStats } from '../../lib/issues';
 import clsx from 'clsx';
 
 export function SubmissionStatusBar() {
@@ -18,14 +12,12 @@ export function SubmissionStatusBar() {
 
   if (!review) return null;
 
-  const issues = review.issues;
-  const counts = getCounts(issues);
-  const blocking = getBlockingIssues(issues);
+  const { counts, blocking, blockingRemaining, ctaMode, canProceed } = deriveReviewStats(
+    review.issues,
+    resolvedIds,
+  );
   const blockingTotal = blocking.length;
-  const blockingRemaining = getBlockingRemaining(issues, resolvedIds);
   const blockingResolved = blockingTotal - blockingRemaining;
-  const ctaMode = getCtaMode(issues);
-  const canProceed = getCanProceed(issues, resolvedIds);
 
   const isSubmitMode = ctaMode === 'submit';
   const isCleared = isSubmitMode || (canProceed && blockingTotal > 0);

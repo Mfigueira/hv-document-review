@@ -7,7 +7,7 @@ import { SubmissionStatusBar } from '../components/submission/SubmissionStatusBa
 import { IssuesPanel } from '../components/issues/IssuesPanel';
 import { DocumentViewer } from '../components/document/DocumentViewer';
 import { ErrorBoundary } from '../components/error/ErrorBoundary';
-import { getCtaMode, getCanProceed } from '../lib/issues';
+import { deriveReviewStats } from '../lib/issues';
 
 type MobilePane = 'document' | 'issues';
 
@@ -22,8 +22,7 @@ function MobileCtaBar() {
 
   if (!review) return null;
 
-  const ctaMode = getCtaMode(review.issues);
-  const canProceed = getCanProceed(review.issues, resolvedIds);
+  const { ctaMode, canProceed } = deriveReviewStats(review.issues, resolvedIds);
   const isSubmitMode = ctaMode === 'submit';
 
   const handleCta = async () => {
