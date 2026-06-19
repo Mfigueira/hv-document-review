@@ -4,12 +4,7 @@ import type { Scenario } from '../../api/reviewApi';
 
 /**
  * Floating dev panel for switching demo scenarios and resetting resolved state.
- * Render this component only when IS_DEV is true so hooks are never allocated
- * in production (hooks cannot be called conditionally inside the component).
  */
-export const IS_DEV =
-  import.meta.env.DEV || import.meta.env.VITE_SHOW_DEV_PANEL === 'true';
-
 export function DevPanel() {
   const scenario = useReviewStore((s) => s.scenario);
   const setScenario = useReviewStore((s) => s.setScenario);
