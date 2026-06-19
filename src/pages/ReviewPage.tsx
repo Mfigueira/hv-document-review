@@ -3,6 +3,7 @@ import { useReviewStore } from '../store/useReviewStore';
 import { SubmissionStatusBar } from '../components/submission/SubmissionStatusBar';
 import { IssuesPanel } from '../components/issues/IssuesPanel';
 import { DocumentViewer } from '../components/document/DocumentViewer';
+import { ErrorBoundary } from '../components/error/ErrorBoundary';
 
 export function ReviewPage() {
   const { status } = useReview();
@@ -42,7 +43,9 @@ export function ReviewPage() {
           aria-label="Document viewer"
           className="hidden flex-1 overflow-hidden rounded-xl border border-gray-200 bg-white lg:flex lg:flex-col"
         >
-          <DocumentViewer />
+          <ErrorBoundary label="Document viewer">
+            <DocumentViewer />
+          </ErrorBoundary>
         </main>
 
         {/* Issues pane */}
@@ -50,7 +53,9 @@ export function ReviewPage() {
           aria-label="Issues panel"
           className="flex w-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white p-4 lg:w-[400px] xl:w-[440px]"
         >
-          <IssuesPanel />
+          <ErrorBoundary label="Issues panel">
+            <IssuesPanel />
+          </ErrorBoundary>
         </aside>
       </div>
     </>
