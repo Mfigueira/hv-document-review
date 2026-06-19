@@ -5,6 +5,7 @@ import { ReviewPage } from './pages/ReviewPage';
 import { SubmittedPage } from './pages/SubmittedPage';
 import { UploadPage } from './pages/UploadPage';
 import { ProcessingPage } from './pages/ProcessingPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 export const router = createBrowserRouter(
   [
@@ -17,6 +18,7 @@ export const router = createBrowserRouter(
         { path: 'submitted', element: <SubmittedPage /> },
         { path: 'upload', element: <UploadPage /> },
         { path: 'processing', element: <ProcessingPage /> },
+        { path: '*', element: <NotFoundPage /> },
       ],
     },
   ],
