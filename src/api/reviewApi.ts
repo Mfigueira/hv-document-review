@@ -1,3 +1,4 @@
+import { ReviewSchema } from '../types/review';
 import type { Review } from '../types/review';
 import needsRevision from '../mocks/review_v2_needs_revision.json';
 import clean from '../mocks/review_v3_clean.json';
@@ -25,9 +26,9 @@ export async function getReview(scenario: Scenario): Promise<Review> {
   try {
     await new Promise((r) => setTimeout(r, 500));
 
-    const data = scenario === 'clean' ? clean : needsRevision;
+    const raw = scenario === 'clean' ? clean : needsRevision;
 
-    if (!data) {
+    if (!raw) {
       throw new ApiError(
         `Review data not found for scenario: ${scenario}`,
         404,
@@ -35,7 +36,17 @@ export async function getReview(scenario: Scenario): Promise<Review> {
       );
     }
 
-    return data as Review;
+    const parsed = ReviewSchema.safeParse(raw);
+    if (!parsed.success) {
+      throw new ApiError(
+        `Invalid review data for scenario: ${scenario}`,
+        500,
+        'REVIEW_LOAD_FAILED',
+        parsed.error,
+      );
+    }
+
+    return parsed.data;
   } catch (err) {
     if (err instanceof ApiError) throw err;
     throw new ApiError('Failed to load review', 500, 'REVIEW_LOAD_FAILED', err);

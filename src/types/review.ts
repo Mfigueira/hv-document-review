@@ -1,39 +1,48 @@
-export type Severity = 'critical' | 'major' | 'minor';
+import { z } from 'zod';
 
-export type ReviewStatus = 'created' | 'processing' | 'on_review' | 'submitted';
+export const SeveritySchema = z.enum(['critical', 'major', 'minor']);
+export type Severity = z.infer<typeof SeveritySchema>;
 
-export interface Issue {
-  id: string;
-  title: string;
-  description: string;
-  severity: Severity;
-  page: number; // 1-based page where the issue appears
-}
+export const ReviewStatusSchema = z.enum(['created', 'processing', 'on_review', 'submitted']);
+export type ReviewStatus = z.infer<typeof ReviewStatusSchema>;
 
-export interface DocumentPage {
-  page_num: number; // 1-based
-  height: number; // points
-  width: number; // points
-}
+export const IssueSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  severity: SeveritySchema,
+  page: z.number().int().positive(),
+});
+export type Issue = z.infer<typeof IssueSchema>;
 
-export interface ReviewDocument {
-  pdf_url: string; // replaced with local static file
-  pages: DocumentPage[];
-}
+export const DocumentPageSchema = z.object({
+  page_num: z.number().int().positive(),
+  height: z.number().positive(),
+  width: z.number().positive(),
+});
+export type DocumentPage = z.infer<typeof DocumentPageSchema>;
 
-export interface ReviewUser {
-  id: string;
-  first_name: string;
-  last_name: string;
-}
+export const ReviewDocumentSchema = z.object({
+  pdf_url: z.string(),
+  pages: z.array(DocumentPageSchema),
+});
+export type ReviewDocument = z.infer<typeof ReviewDocumentSchema>;
 
-export interface Review {
-  id: string;
-  name: string; // file name, e.g. "Annual Compliance Report..."
-  uploaded_at: string; // ISO datetime of latest version upload
-  status: ReviewStatus;
-  version: number;
-  document: ReviewDocument;
-  user: ReviewUser;
-  issues: Issue[];
-}
+export const ReviewUserSchema = z.object({
+  id: z.string(),
+  first_name: z.string(),
+  last_name: z.string(),
+});
+export type ReviewUser = z.infer<typeof ReviewUserSchema>;
+
+export const ReviewSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  uploaded_at: z.string(),
+  status: ReviewStatusSchema,
+  version: z.number().int().nonnegative(),
+  document: ReviewDocumentSchema,
+  user: ReviewUserSchema,
+  issues: z.array(IssueSchema),
+});
+export type Review = z.infer<typeof ReviewSchema>;
