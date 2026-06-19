@@ -1,6 +1,8 @@
 # HomeVision — Document Review Challenge
 
 > **Live demo:** [https://mfigueira.github.io/hv-document-review/](https://mfigueira.github.io/hv-document-review/)
+>
+> The demo loads a 34-page PDF with pre-annotated compliance issues. Use the floating ⚙ **Dev panel** (bottom-right) to switch between two scenarios: one that requires revision before submission, and one that is immediately ready to submit. No account or backend is needed — all data is mocked.
 
 A single-page React application that lets a compliance reviewer read a PDF document, triage annotated issues by severity, mark them as resolved, and then submit or re-upload the document depending on the review outcome.
 
@@ -25,9 +27,9 @@ Other scripts:
 
 ---
 
-## The two demo scenarios
+## Demo scenarios
 
-Use the **Dev panel** (⚙ bottom-right, development mode only) to switch scenarios.
+The app ships with two pre-configured scenarios, selectable from the **Dev panel** (⚙ bottom-right). Each scenario loads a different mock API response so you can explore both review outcomes without a backend.
 
 | Scenario                         | Mock                                        | What you see                                                                         |
 | -------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------ |
