@@ -5,7 +5,6 @@ import {
   type ChangeEvent,
   type KeyboardEvent,
   type RefObject,
-  useMemo,
 } from 'react';
 import { Worker, Viewer, SpecialZoomLevel } from '@react-pdf-viewer/core';
 import { searchPlugin } from '@react-pdf-viewer/search';
@@ -188,7 +187,7 @@ export function DocumentViewer() {
   // store ensures stable state across renders even though the returned object
   // reference is new each time.
   // enableShortcuts: false — we own Cmd/Ctrl+F via usePdfSearch.
-  const searchPluginInstance = useMemo(() => searchPlugin({ enableShortcuts: false }), []);
+  const searchPluginInstance = searchPlugin({ enableShortcuts: false });
 
   // Search state — all unconditional useState calls so hooks order never changes.
   const [keyword, setKeyword] = useState('');
