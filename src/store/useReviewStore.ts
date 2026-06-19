@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
 import type { Review, Severity } from '../types/review';
 import { getReview, submitReview, type Scenario } from '../api/reviewApi';
+import { publicUrl } from '../lib/utils';
 
 interface ReviewState {
   // data
@@ -47,6 +48,7 @@ export const useReviewStore = create<ReviewState>()(
         set({ status: 'loading', review: null, selectedPage: null, selectedIssueId: null });
         try {
           const review = await getReview(activeScenario);
+          review.document.pdf_url = publicUrl(review.document.pdf_url);
           set({ review, status: 'ready', scenario: activeScenario });
         } catch {
           set({ status: 'error' });
