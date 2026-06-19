@@ -6,16 +6,19 @@ import { SubmittedPage } from './pages/SubmittedPage';
 import { UploadPage } from './pages/UploadPage';
 import { ProcessingPage } from './pages/ProcessingPage';
 
-export const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <AppLayout />,
-    errorElement: <RouteErrorFallback />,
-    children: [
-      { index: true, element: <ReviewPage /> },
-      { path: 'submitted', element: <SubmittedPage /> },
-      { path: 'upload', element: <UploadPage /> },
-      { path: 'processing', element: <ProcessingPage /> },
-    ],
-  },
-]);
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <AppLayout />,
+      errorElement: <RouteErrorFallback />,
+      children: [
+        { index: true, element: <ReviewPage /> },
+        { path: 'submitted', element: <SubmittedPage /> },
+        { path: 'upload', element: <UploadPage /> },
+        { path: 'processing', element: <ProcessingPage /> },
+      ],
+    },
+  ],
+  { basename: import.meta.env.BASE_URL },
+);
