@@ -26,27 +26,11 @@ export async function getReview(scenario: Scenario): Promise<Review> {
   try {
     await new Promise((r) => setTimeout(r, 500));
 
-    const raw = scenario === 'clean' ? clean : needsRevision;
+    const data = scenario === 'clean' ? clean : needsRevision;
 
-    if (!raw) {
-      throw new ApiError(
-        `Review data not found for scenario: ${scenario}`,
-        404,
-        'REVIEW_NOT_FOUND',
-      );
-    }
+    const review = ReviewSchema.parse(data);
 
-    const parsed = ReviewSchema.safeParse(raw);
-    if (!parsed.success) {
-      throw new ApiError(
-        `Invalid review data for scenario: ${scenario}`,
-        500,
-        'REVIEW_LOAD_FAILED',
-        parsed.error,
-      );
-    }
-
-    return parsed.data;
+    return review;
   } catch (err) {
     if (err instanceof ApiError) throw err;
     throw new ApiError('Failed to load review', 500, 'REVIEW_LOAD_FAILED', err);
