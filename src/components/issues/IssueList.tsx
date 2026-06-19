@@ -20,7 +20,7 @@ export function IssueList({
   onToggle,
   onGoToPage,
 }: Props) {
-  const visible = filterIssuesBySeverity(issues, severityFilter);
+  const visible = filterIssuesBySeverity(issues, severityFilter).slice().sort((a, b) => a.page - b.page);
 
   // Refs keyed by issue id so we can scroll the selected card into view.
   const itemRefs = useRef<Map<string, HTMLLIElement>>(new Map());
