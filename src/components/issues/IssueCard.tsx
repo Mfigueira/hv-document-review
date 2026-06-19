@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import type { Issue } from '../../types/review';
+import { useReviewStore } from '../../store/useReviewStore';
 
 interface Props {
   issue: Issue;
@@ -28,6 +29,7 @@ const severityConfig = {
 } as const;
 
 export function IssueCard({ issue, resolved, isSelected, onToggle, onGoToPage }: Props) {
+  const selectIssue = useReviewStore((s) => s.selectIssue);
   const cfg = severityConfig[issue.severity];
 
   return (
@@ -45,7 +47,10 @@ export function IssueCard({ issue, resolved, isSelected, onToggle, onGoToPage }:
           <input
             type="checkbox"
             checked={resolved}
-            onChange={onToggle}
+            onChange={() => {
+              onToggle();
+              selectIssue(null);
+            }}
             aria-label={`Mark "${issue.title}" as resolved`}
             className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600"
           />
@@ -82,10 +87,10 @@ export function IssueCard({ issue, resolved, isSelected, onToggle, onGoToPage }:
             {issue.description}
           </p>
 
-          {/* Go to page */}
+          {/* Go to page — hidden on mobile (no cross-pane navigation) */}
           <button
             onClick={onGoToPage}
-            className="cursor-pointer mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-blue-600 hover:text-blue-800 focus:outline-none rounded"
+            className="mt-2 hidden cursor-pointer items-center gap-1 rounded text-[11px] font-medium text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-1 lg:inline-flex"
           >
             Go to page {issue.page}
             <span aria-hidden="true">→</span>

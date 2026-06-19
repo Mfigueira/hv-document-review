@@ -70,6 +70,8 @@ function ConnectedPageMarker({ pageIndex }: { pageIndex: number }) {
   const review = useReviewStore((s) => s.review);
   const selectedIssueId = useReviewStore((s) => s.selectedIssueId);
   const selectIssue = useReviewStore((s) => s.selectIssue);
+  const severityFilter = useReviewStore((s) => s.severityFilter);
+  const setFilter = useReviewStore((s) => s.setFilter);
 
   const issues = useMemo<Issue[]>(() => {
     if (!review) return [];
@@ -95,14 +97,16 @@ function ConnectedPageMarker({ pageIndex }: { pageIndex: number }) {
         const isActive = subset.some((i) => i.id === selectedIssueId);
 
         const handleClick = () => {
-          if (isActive) {
-            // Cycle to the next issue of this severity, or deselect on wrap-around.
-            const idx = subset.findIndex((i) => i.id === selectedIssueId);
-            const next = subset[idx + 1];
-            selectIssue(next ? next.id : null);
-          } else {
-            selectIssue(subset[0].id);
+          const idx = subset.findIndex((i) => i.id === selectedIssueId);
+          const next = subset[idx + 1];
+
+          const issue = isActive ? next || null : subset[0];
+
+          if (issue && severityFilter !== 'all' && issue.severity !== severityFilter) {
+            setFilter('all');
           }
+
+          selectIssue(issue?.id ?? null);
         };
 
         const label =
@@ -119,8 +123,9 @@ function ConnectedPageMarker({ pageIndex }: { pageIndex: number }) {
             aria-label={label}
             aria-pressed={isActive}
             className={[
-              'cursor-pointer flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold shadow-md mb-1',
+              'flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold shadow-md mb-1',
               'ring-2 transition-all',
+              'pointer-events-none lg:pointer-events-auto lg:cursor-pointer',
               cfg.bg,
               cfg.text,
               isActive ? `${cfg.ring} ring-4` : cfg.ring,

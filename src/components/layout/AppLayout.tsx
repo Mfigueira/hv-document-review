@@ -8,10 +8,10 @@ export function AppLayout() {
   const review = useReviewStore((s) => s.review);
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex h-dvh min-h-[750px] flex-col">
       <Header review={review} />
 
-      <main className="flex-1">
+      <main className="flex flex-1 flex-col overflow-hidden">
         <Outlet />
       </main>
 

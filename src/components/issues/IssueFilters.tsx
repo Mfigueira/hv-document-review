@@ -19,7 +19,7 @@ export function IssueFilters({ counts, active, onChange }: Props) {
 
   return (
     <div
-      role="tablist"
+      role="group"
       aria-label="Filter issues by severity"
       className="flex gap-1 rounded-lg bg-gray-100 p-1"
     >
@@ -37,10 +37,11 @@ export function IssueFilters({ counts, active, onChange }: Props) {
         return (
           <button
             key={value}
-            role="tab"
-            aria-selected={isActive}
+            id={`severity-${value}`}
+            type="button"
+            aria-pressed={isActive}
             onClick={() => onChange(value)}
-            className={`cursor-pointer flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors ${
+            className={`flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-inset ${
               isActive ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
             }`}
           >

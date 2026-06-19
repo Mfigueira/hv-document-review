@@ -96,8 +96,8 @@ export function SubmissionStatusBar() {
           )}
         </div>
 
-        {/* CTA button */}
-        <div className="relative shrink-0">
+        {/* CTA button — hidden on mobile (MobileCtaBar handles it there) */}
+        <div className="relative hidden shrink-0 lg:block">
           {!canProceed && (
             <span
               id="cta-tooltip"
@@ -114,7 +114,7 @@ export function SubmissionStatusBar() {
             aria-describedby={!canProceed ? 'cta-tooltip' : undefined}
             title={!canProceed ? 'Resolve all critical & major issues first' : undefined}
             className={clsx(
-              'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2',
+              'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition-all focus:outline-none',
               {
                 'cursor-pointer bg-green-600 text-white hover:bg-green-700':
                   canProceed && !submitting,

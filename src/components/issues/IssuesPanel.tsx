@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useReviewStore, useResolvedIds } from '../../store/useReviewStore';
 import { getCounts } from '../../lib/issues';
 import { IssueFilters } from './IssueFilters';
@@ -12,16 +11,6 @@ export function IssuesPanel() {
   const selectIssue = useReviewStore((s) => s.selectIssue);
   const selectedIssueId = useReviewStore((s) => s.selectedIssueId);
   const resolvedIds = useResolvedIds();
-
-  // If the selected issue is hidden by the current severity filter, clear the
-  // filter so it becomes visible in the list.
-  useEffect(() => {
-    if (!selectedIssueId || !review) return;
-    const issue = review.issues.find((i) => i.id === selectedIssueId);
-    if (issue && severityFilter !== 'all' && issue.severity !== severityFilter) {
-      setFilter('all');
-    }
-  }, [selectedIssueId, review, severityFilter, setFilter]);
 
   if (!review) return null;
 
