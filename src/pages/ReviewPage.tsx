@@ -2,6 +2,7 @@ import { useReview } from '../hooks/useReview';
 import { useReviewStore } from '../store/useReviewStore';
 import { SubmissionStatusBar } from '../components/submission/SubmissionStatusBar';
 import { IssuesPanel } from '../components/issues/IssuesPanel';
+import { DocumentViewer } from '../components/document/DocumentViewer';
 
 export function ReviewPage() {
   const { status } = useReview();
@@ -41,24 +42,7 @@ export function ReviewPage() {
           aria-label="Document viewer"
           className="hidden flex-1 overflow-hidden rounded-xl border border-gray-200 bg-white lg:flex lg:flex-col"
         >
-          <div className="border-b border-gray-100 px-4 py-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Document</p>
-            <p className="mt-0.5 text-sm text-gray-600">
-              Use <kbd className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">Cmd</kbd>
-              {' + '}
-              <kbd className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">F</kbd> to search
-              — PDF viewer coming in Stage 3
-            </p>
-          </div>
-          <div className="flex flex-1 items-center justify-center text-sm text-gray-300">
-            <div className="text-center">
-              <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-xl bg-gray-50 text-3xl">
-                📄
-              </div>
-              <p className="font-medium text-gray-400">PDF Viewer</p>
-              <p className="mt-0.5 text-xs text-gray-300">Stage 3</p>
-            </div>
-          </div>
+          <DocumentViewer />
         </main>
 
         {/* Issues pane */}
