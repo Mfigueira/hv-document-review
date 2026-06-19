@@ -10,10 +10,16 @@ export interface IssueCounts {
 }
 
 export function getCounts(issues: Issue[]): IssueCounts {
-  const critical = issues.filter((i) => i.severity === 'critical').length;
-  const major = issues.filter((i) => i.severity === 'major').length;
-  const minor = issues.filter((i) => i.severity === 'minor').length;
-  return { critical, major, minor, total: critical + major + minor };
+  const counts = issues.reduce(
+    (acc, i) => {
+      if (i.severity === 'critical') acc.critical++;
+      else if (i.severity === 'major') acc.major++;
+      else if (i.severity === 'minor') acc.minor++;
+      return acc;
+    },
+    { critical: 0, major: 0, minor: 0 },
+  );
+  return { ...counts, total: counts.critical + counts.major + counts.minor };
 }
 
 export function getBlockingIssues(issues: Issue[]): Issue[] {
