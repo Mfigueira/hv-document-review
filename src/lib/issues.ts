@@ -18,16 +18,14 @@ export interface ReviewStats {
 }
 
 export function getCounts(issues: Issue[]): IssueCounts {
-  const counts = issues.reduce(
-    (acc, i) => {
-      if (i.severity === 'critical') acc.critical++;
-      else if (i.severity === 'major') acc.major++;
-      else if (i.severity === 'minor') acc.minor++;
-      return acc;
-    },
-    { critical: 0, major: 0, minor: 0 },
-  );
-  return { ...counts, total: counts.critical + counts.major + counts.minor };
+  const counts: IssueCounts = { critical: 0, major: 0, minor: 0, total: 0 };
+  for (const issue of issues) {
+    if (issue.severity === 'critical') counts.critical++;
+    else if (issue.severity === 'major') counts.major++;
+    else if (issue.severity === 'minor') counts.minor++;
+  }
+  counts.total = counts.critical + counts.major + counts.minor;
+  return counts;
 }
 
 export function getBlockingIssues(issues: Issue[]): Issue[] {
