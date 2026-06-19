@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useReviewStore, useResolvedIds } from '../../store/useReviewStore';
 import {
   getCounts,
@@ -8,8 +9,10 @@ import {
 } from '../../lib/issues';
 
 export function SubmissionStatusBar() {
+  const navigate = useNavigate();
   const review = useReviewStore((s) => s.review);
   const submitting = useReviewStore((s) => s.submitting);
+  const submit = useReviewStore((s) => s.submit);
   const resolvedIds = useResolvedIds();
 
   if (!review) return null;
@@ -27,6 +30,16 @@ export function SubmissionStatusBar() {
   const isCleared = isSubmitMode || (canProceed && blockingTotal > 0);
 
   const progressPct = blockingTotal > 0 ? (blockingResolved / blockingTotal) * 100 : 100;
+
+  const handleCta = async () => {
+    if (!canProceed || submitting) return;
+    if (isSubmitMode) {
+      await submit();
+      void navigate('/submitted');
+    } else {
+      void navigate('/upload');
+    }
+  };
 
   return (
     <div
@@ -94,15 +107,14 @@ export function SubmissionStatusBar() {
             </span>
           )}
           <button
+            onClick={() => void handleCta()}
             aria-disabled={!canProceed || submitting}
             disabled={!canProceed || submitting}
             aria-describedby={!canProceed ? 'cta-tooltip' : undefined}
             title={!canProceed ? 'Resolve all critical & major issues first' : undefined}
             className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 ${
               canProceed && !submitting
-                ? isSubmitMode
-                  ? 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500'
-                  : 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500'
+                ? 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500'
                 : 'cursor-not-allowed bg-gray-200 text-gray-400 shadow-none'
             }`}
           >

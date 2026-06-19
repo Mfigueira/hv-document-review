@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { DevPanel } from '../dev/DevPanel';
 import { useReviewStore } from '../../store/useReviewStore';
 
 export function AppLayout() {
@@ -14,10 +15,10 @@ export function AppLayout() {
         <Outlet />
       </main>
 
-      {/* DevPanel placeholder — wired in Stage 4 */}
-      <div id="dev-panel-slot" />
-
       <Footer />
+
+      {/* Floating dev panel — fixed position, rendered outside the normal flow */}
+      <DevPanel />
     </div>
   );
 }

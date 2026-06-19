@@ -1,8 +1,10 @@
+import clsx from 'clsx';
 import type { Issue } from '../../types/review';
 
 interface Props {
   issue: Issue;
   resolved: boolean;
+  isSelected: boolean;
   onToggle: () => void;
   onGoToPage: () => void;
 }
@@ -25,16 +27,17 @@ const severityConfig = {
   },
 } as const;
 
-export function IssueCard({ issue, resolved, onToggle, onGoToPage }: Props) {
+export function IssueCard({ issue, resolved, isSelected, onToggle, onGoToPage }: Props) {
   const cfg = severityConfig[issue.severity];
 
   return (
     <div
-      className={`group rounded-lg border p-3 transition-colors ${
-        resolved
-          ? 'border-gray-100 bg-gray-50 opacity-60'
-          : 'border-gray-200 bg-white hover:border-gray-300'
-      }`}
+      className={clsx('group rounded-lg border p-3 transition-colors', {
+        'border-blue-400 bg-gray-50 opacity-60 transition-all': resolved && isSelected,
+        'border-gray-100 bg-gray-50 opacity-60 transition-all': resolved && !isSelected,
+        'border-blue-400 bg-blue-50': !resolved && isSelected,
+        'border-gray-200 bg-white hover:border-gray-300': !resolved && !isSelected,
+      })}
     >
       <div className="flex items-start gap-2.5">
         {/* Checkbox */}
@@ -44,7 +47,7 @@ export function IssueCard({ issue, resolved, onToggle, onGoToPage }: Props) {
             checked={resolved}
             onChange={onToggle}
             aria-label={`Mark "${issue.title}" as resolved`}
-            className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+            className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600"
           />
         </label>
 
@@ -82,7 +85,7 @@ export function IssueCard({ issue, resolved, onToggle, onGoToPage }: Props) {
           {/* Go to page */}
           <button
             onClick={onGoToPage}
-            className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded"
+            className="cursor-pointer mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-blue-600 hover:text-blue-800 focus:outline-none rounded"
           >
             Go to page {issue.page}
             <span aria-hidden="true">→</span>

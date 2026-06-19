@@ -1,12 +1,20 @@
 import {
   useRef,
   useCallback,
+  useMemo,
+  useEffect,
   useState,
   type ChangeEvent,
   type KeyboardEvent,
   type RefObject,
 } from 'react';
-import { Worker, Viewer, SpecialZoomLevel } from '@react-pdf-viewer/core';
+import {
+  Worker,
+  Viewer,
+  SpecialZoomLevel,
+  type Plugin,
+  type PluginFunctions,
+} from '@react-pdf-viewer/core';
 import { searchPlugin } from '@react-pdf-viewer/search';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
@@ -14,6 +22,127 @@ import '@react-pdf-viewer/search/lib/styles/index.css';
 // This avoids bundling the ~1 MB worker into the main JS payload.
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
 import { usePdfSearch } from './usePdfSearch';
+import { useReviewStore } from '../../store/useReviewStore';
+import { groupIssuesByPage } from '../../lib/issues';
+import type { Issue } from '../../types/review';
+
+// ─── Page navigator plugin ────────────────────────────────────────────────────
+// Thin wrapper that captures jumpToPage from the library's PluginFunctions so
+// we can call it imperatively (no extra npm package needed).
+
+function usePageNavigatorPlugin(): { plugin: Plugin; jumpToPage: (page: number) => void } {
+  const jumpRef = useRef<((pageIndex: number) => Promise<void>) | null>(null);
+
+  const plugin = useMemo<Plugin>(
+    () => ({
+      install: (fns: PluginFunctions) => {
+        jumpRef.current = fns.jumpToPage;
+      },
+      uninstall: () => {
+        jumpRef.current = null;
+      },
+    }),
+    [],
+  );
+
+  // `page` is 1-indexed (matches issue.page); jumpToPage is 0-indexed.
+  const jumpToPage = useCallback((page: number) => {
+    void jumpRef.current?.(page - 1);
+  }, []);
+
+  return { plugin, jumpToPage };
+}
+
+// ─── Per-page issue markers ───────────────────────────────────────────────────
+// Rendered via Plugin.renderPageLayer so they overlay each PDF page.
+// ConnectedPageMarker is a full React component — it subscribes to the Zustand
+// store directly so it re-renders whenever selectedIssueId changes.
+
+const severityOrder: Issue['severity'][] = ['critical', 'major', 'minor'];
+
+const markerConfig = {
+  critical: { icon: '⛔', bg: 'bg-red-500', ring: 'ring-red-300', text: 'text-white' },
+  major: { icon: '⚠️', bg: 'bg-amber-500', ring: 'ring-amber-300', text: 'text-white' },
+  minor: { icon: 'ℹ️', bg: 'bg-slate-500', ring: 'ring-slate-300', text: 'text-white' },
+} as const;
+
+function ConnectedPageMarker({ pageIndex }: { pageIndex: number }) {
+  const review = useReviewStore((s) => s.review);
+  const selectedIssueId = useReviewStore((s) => s.selectedIssueId);
+  const selectIssue = useReviewStore((s) => s.selectIssue);
+
+  const issues = useMemo<Issue[]>(() => {
+    if (!review) return [];
+    return groupIssuesByPage(review.issues).get(pageIndex + 1) ?? [];
+  }, [review, pageIndex]);
+
+  if (issues.length === 0) return <></>;
+
+  // Build one badge per severity level that's actually present on this page.
+  const groups = severityOrder
+    .map((sev) => ({ sev, subset: issues.filter((i) => i.severity === sev) }))
+    .filter(({ subset }) => subset.length > 0);
+
+  return (
+    // Vertical stack anchored to the top-right corner of the page.
+    <div
+      style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}
+      className="flex flex-col items-end gap-1"
+    >
+      {groups.map(({ sev, subset }) => {
+        const cfg = markerConfig[sev];
+        // The badge is "active" when any issue of this severity on this page is selected.
+        const isActive = subset.some((i) => i.id === selectedIssueId);
+
+        const handleClick = () => {
+          if (isActive) {
+            // Cycle to the next issue of this severity, or deselect on wrap-around.
+            const idx = subset.findIndex((i) => i.id === selectedIssueId);
+            const next = subset[idx + 1];
+            selectIssue(next ? next.id : null);
+          } else {
+            selectIssue(subset[0].id);
+          }
+        };
+
+        const label =
+          subset.length === 1
+            ? `${subset[0].title} (p.${pageIndex + 1})`
+            : `${subset.length} ${sev} issues on page ${pageIndex + 1}`;
+
+        return (
+          <button
+            key={sev}
+            type="button"
+            onClick={handleClick}
+            title={label}
+            aria-label={label}
+            aria-pressed={isActive}
+            className={[
+              'cursor-pointer flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold shadow-md mb-1',
+              'ring-2 transition-all',
+              cfg.bg,
+              cfg.text,
+              isActive ? `${cfg.ring} ring-4` : cfg.ring,
+            ].join(' ')}
+          >
+            <span aria-hidden="true">{cfg.icon}</span>
+            <span>{subset.length}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function usePageMarkersPlugin(): Plugin {
+  return useMemo<Plugin>(
+    () => ({
+      renderPageLayer: ({ pageIndex }) => <ConnectedPageMarker pageIndex={pageIndex} />,
+    }),
+    [],
+  );
+}
 
 // ─── Search panel (pure props — no render-prop plugin component) ──────────────
 
@@ -181,6 +310,23 @@ function SearchPanel({
 export function DocumentViewer() {
   const { isOpen, open, close, inputRef } = usePdfSearch();
 
+  // Store integration
+  const review = useReviewStore((s) => s.review);
+  const selectedPage = useReviewStore((s) => s.selectedPage);
+
+  // Navigator plugin — captures jumpToPage imperatively from PluginFunctions.
+  const { plugin: navigatorPlugin, jumpToPage } = usePageNavigatorPlugin();
+
+  // Page markers plugin — overlays issue badges on each page.
+  const markersPlugin = usePageMarkersPlugin();
+
+  // Jump to the selected page whenever it changes (1-indexed in store → 0-indexed in viewer).
+  useEffect(() => {
+    if (selectedPage !== null) {
+      jumpToPage(selectedPage);
+    }
+  }, [selectedPage, jumpToPage]);
+
   // searchPlugin is a custom hook (calls React.useMemo internally). It MUST be
   // called at the component top level on every render — never inside useMemo or
   // any other hook callback. The library's own internal useMemo([], []) for the
@@ -298,9 +444,9 @@ export function DocumentViewer() {
       <div className="flex-1 overflow-auto">
         <Worker workerUrl={workerUrl}>
           <Viewer
-            fileUrl="/example_document.pdf"
+            fileUrl={review?.document.pdf_url ?? '/example_document.pdf'}
             defaultScale={SpecialZoomLevel.PageWidth}
-            plugins={[searchPluginInstance]}
+            plugins={[searchPluginInstance, navigatorPlugin, markersPlugin]}
           />
         </Worker>
       </div>
