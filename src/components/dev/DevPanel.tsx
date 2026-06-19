@@ -12,6 +12,7 @@ export function DevPanel() {
   const scenario = useReviewStore((s) => s.scenario);
   const setScenario = useReviewStore((s) => s.setScenario);
   const resetResolved = useReviewStore((s) => s.resetResolved);
+  const resolveAll = useReviewStore((s) => s.resolveAll);
   const [collapsed, setCollapsed] = useState(false);
 
   if (!IS_DEV) return null;
@@ -73,6 +74,15 @@ export function DevPanel() {
             className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-700"
           >
             Reset resolved state
+          </button>
+
+          {/* Resolve all button */}
+          <button
+            type="button"
+            onClick={resolveAll}
+            className="mt-1.5 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:border-green-200 hover:bg-green-50 hover:text-green-700"
+          >
+            Resolve all issues
           </button>
         </div>
       )}

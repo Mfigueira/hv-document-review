@@ -27,6 +27,7 @@ interface ReviewState {
   selectIssue: (id: string | null) => void;
   submit: () => Promise<boolean>;
   resetResolved: () => void;
+  resolveAll: () => void;
 }
 
 function resolvedKey(review: Review): string {
@@ -117,6 +118,13 @@ export const useReviewStore = create<ReviewState>()(
         const key = resolvedKey(review);
         const { [key]: _drop, ...rest } = resolvedIssueIds;
         set({ resolvedIssueIds: rest });
+      },
+
+      resolveAll: () => {
+        const { review, resolvedIssueIds } = get();
+        if (!review) return;
+        const key = resolvedKey(review);
+        set({ resolvedIssueIds: { ...resolvedIssueIds, [key]: review.issues.map((i) => i.id) } });
       },
     }),
     {
