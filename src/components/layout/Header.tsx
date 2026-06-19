@@ -1,3 +1,4 @@
+import { useReviewStore } from '../../store/useReviewStore';
 import type { Review, ReviewStatus } from '../../types/review';
 
 interface Props {
@@ -19,6 +20,8 @@ const statusClass: Record<ReviewStatus, string> = {
 };
 
 export function Header({ review }: Props) {
+  const status = useReviewStore((s) => s.status);
+
   return (
     <header className="sticky top-0 z-20 border-b border-gray-200 bg-white shadow-sm">
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6">
@@ -59,7 +62,9 @@ export function Header({ review }: Props) {
           </>
         )}
 
-        {!review && <div className="ml-auto h-7 w-32 animate-pulse rounded bg-gray-200" />}
+        {!review && status === 'loading' && (
+          <div className="ml-auto h-7 w-32 animate-pulse rounded bg-gray-200" />
+        )}
       </div>
     </header>
   );
