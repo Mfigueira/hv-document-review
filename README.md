@@ -102,4 +102,5 @@ _(Summarized from architecture notes)_
 - [ ] **Observability:** Sentry for error tracking; analytics on key actions (submit, re-upload, search, issue navigation).
 - [ ] **Testing/CI:** add E2E tests (Playwright) for gating and search; CI pipeline with lint/test/build; preview deployments per PR.
 - [ ] **i18n:** locale-aware dates; i18n-ready strings.
+- [ ] **SEO:** replace the `/og-image.png` placeholder with a real 1200×630 social preview image; add per-route `<title>` via `<Helmet>`; flip `robots` to `index, follow` on any public-facing pages; add `<link rel="canonical">` once the domain is stable; add an `apple-touch-icon` and `manifest.json` for PWA installation.
 - [ ] **Remove or restrict the dev panel** for real production; use feature flags.
