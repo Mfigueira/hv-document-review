@@ -62,7 +62,7 @@ jobs:
         run: npm run build
         env:
           VITE_BASE_URL: /hv-document-review/
-          VITE_SHOW_DEV_PANEL: 'true' # remove this in a real production environment
+          VITE_SHOW_DEV_PANEL: 'true'
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

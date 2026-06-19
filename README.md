@@ -78,7 +78,7 @@ The primary action changes based on the review state: **Re-upload** when there a
 
 ## Dev panel
 
-In development (`npm run dev`) a floating ⚙ **Dev panel** is shown (bottom-right). It lets you switch between Scenario A and B and reset resolved state. In the production build it is hidden unless you set `VITE_SHOW_DEV_PANEL=true` at build time.
+In development (`npm run dev`) a floating ⚙ **Dev panel** is shown (bottom-right). It lets you switch between Scenario A and B and reset resolved state. In the production build it should be hidden unless setting `VITE_SHOW_DEV_PANEL=true` at build time (for demo purposes, it is indeed set to `true`).
 
 ---
 

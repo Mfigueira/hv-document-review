@@ -4,11 +4,9 @@ import type { Scenario } from '../../api/reviewApi';
 
 /**
  * Floating dev panel for switching demo scenarios and resetting resolved state.
- * Gated to development mode; for production, set VITE_SHOW_DEV_PANEL=true to
- * keep it visible in a demo build, or remove the gate entirely for Stage 5 deploy.
  */
-const ALWAYS_SHOW = import.meta.env.VITE_SHOW_DEV_PANEL === 'true';
-const IS_DEV = import.meta.env.DEV || ALWAYS_SHOW;
+const VITE_SHOW_DEV_PANEL = import.meta.env.VITE_SHOW_DEV_PANEL === 'true';
+const IS_DEV = import.meta.env.DEV || VITE_SHOW_DEV_PANEL;
 
 export function DevPanel() {
   const scenario = useReviewStore((s) => s.scenario);
