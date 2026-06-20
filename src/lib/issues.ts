@@ -33,7 +33,17 @@ export function getBlockingIssues(issues: Issue[]): Issue[] {
 }
 
 export function getBlockingRemaining(issues: Issue[], resolvedIds: string[]): number {
-  return getBlockingIssues(issues).filter((i) => !resolvedIds.includes(i.id)).length;
+  const resolvedSet = new Set(resolvedIds);
+  let remaining = 0;
+  for (const issue of issues) {
+    if (
+      (issue.severity === 'critical' || issue.severity === 'major') &&
+      !resolvedSet.has(issue.id)
+    ) {
+      remaining++;
+    }
+  }
+  return remaining;
 }
 
 export function getCtaMode(issues: Issue[]): CtaMode {
@@ -44,7 +54,8 @@ export function getCtaMode(issues: Issue[]): CtaMode {
 export function getCanProceed(issues: Issue[], resolvedIds: string[]): boolean {
   const blocking = getBlockingIssues(issues);
   if (blocking.length === 0) return true;
-  return blocking.filter((i) => !resolvedIds.includes(i.id)).length === 0;
+  const resolvedSet = new Set(resolvedIds);
+  return blocking.every((i) => resolvedSet.has(i.id));
 }
 
 /**
@@ -69,7 +80,8 @@ export function deriveReviewStats(issues: Issue[], resolvedIds: string[]): Revie
   }
   counts.total = counts.critical + counts.major + counts.minor;
 
-  const blockingRemaining = blocking.filter((i) => !resolvedIds.includes(i.id)).length;
+  const resolvedSet = new Set(resolvedIds);
+  const blockingRemaining = blocking.filter((i) => !resolvedSet.has(i.id)).length;
   const ctaMode: CtaMode = blocking.length === 0 ? 'submit' : 'reupload';
   const canProceed = ctaMode === 'submit' || blockingRemaining === 0;
 
@@ -79,8 +91,12 @@ export function deriveReviewStats(issues: Issue[], resolvedIds: string[]): Revie
 export function groupIssuesByPage(issues: Issue[]): Map<number, Issue[]> {
   const map = new Map<number, Issue[]>();
   for (const issue of issues) {
-    const existing = map.get(issue.page) ?? [];
-    map.set(issue.page, [...existing, issue]);
+    const bucket = map.get(issue.page);
+    if (bucket) {
+      bucket.push(issue);
+    } else {
+      map.set(issue.page, [issue]);
+    }
   }
   return map;
 }
