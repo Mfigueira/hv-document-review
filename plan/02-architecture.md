@@ -27,15 +27,15 @@ pages can be dropped in later without restructuring.
 | ------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
 | `/`           | **ReviewPage**     | **In scope** (the ticket).                                                                                          |
 | `/submitted`  | **SubmittedPage**  | **In scope** (minimal: check icon + title + doc name/version).                                                      |
-| `/upload`     | **UploadPage**     | **Out of Scope** � ship a tiny placeholder stub so the "Re-upload" CTA has a real destination and the route exists. |
-| `/processing` | **ProcessingPage** | **Out of Scope** � placeholder stub only.                                                                           |
+| `/upload`     | **UploadPage**     | **Out Of Scope** � ship a tiny placeholder stub so the "Re-upload" CTA has a real destination and the route exists. |
+| `/processing` | **ProcessingPage** | **Out Of Scope** � placeholder stub only.                                                                           |
 
 - A **layout route** renders `<Header/>` + `<Outlet/>` + `<Footer/>` (and the
   `<DevPanel/>`), so all pages share the chrome.
 - Navigation:
   - **Submit** CTA ? `navigate('/submitted')` (after the simulated submit call).
   - **Re-upload** CTA ? `navigate('/upload')` (the stub explains the real flow is
-    Upload ? Processing ? new Review, Out of Scope here).
+    Upload ? Processing ? new Review, Out Of Scope here).
 - Use `createBrowserRouter` + `RouterProvider`. (Static hosting needs an
   SPA fallback to `index.html` � see �10.)
 

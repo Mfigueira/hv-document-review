@@ -25,7 +25,7 @@ export function ProcessingPage() {
             />
           </svg>
         </div>
-        <h1 className="text-xl font-semibold text-gray-700">Processing — Out of Scope</h1>
+        <h1 className="text-xl font-semibold text-gray-700">Processing — Out Of Scope</h1>
         <p className="mt-2 text-sm text-gray-500">
           This page is a placeholder. The Processing page is owned by another team and is out of
           scope for this challenge.

@@ -170,7 +170,7 @@ In scope:
   when the "Submit" CTA is used in the clean scenario.
 - A small **dev panel** to switch demo scenarios (needs-revision vs clean).
 
-Out of Scope (explicitly):
+Out Of Scope (explicitly):
 
 - The **Upload** and **Processing** pages. The "Re-upload" CTA routes to a tiny
   `/upload` placeholder stub. We scaffold `/upload` + `/processing` routes (via

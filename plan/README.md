@@ -35,7 +35,7 @@ site with mocked data so it can be presented at a live URL.
   **Cmd/Ctrl+F** bound to a search across **all** pages (easiest robust path).
 - **Layout:** **Split View** (doc 3, Option A).
 - **Scope:** The **Review Page** + a **minimal Submitted Page**. The Upload /
-  Processing pages stay Out of Scope � but we scaffold placeholder routes for
+  Processing pages stay Out Of Scope � but we scaffold placeholder routes for
   them (the "Re-upload" CTA routes to the `/upload` stub).
 - **Hosting:** Static build deployed to Vercel / Netlify / Cloudflare Pages.
 
@@ -46,10 +46,10 @@ they go. This state **persists in `localStorage`** (survives reload). The primar
 CTA is **context-dependent**, and a **dev panel** switches between two demo
 scenarios:
 
-| Scenario                                 | Issues present           | Primary CTA   | CTA enabled when                                       | On click ?                                                                         |
-| ---------------------------------------- | ------------------------ | ------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------- |
-| **A � Needs revision** (given `v2` mock) | critical + major + minor | **Re-upload** | all critical **and** major issues are checked/resolved | conceptually goes to Upload ? Processing ? new ReviewOut of Scopepe; we stop here) |
-| **B � Clean** (minor-only mock)          | minor only               | **Submit**    | always (no blocking issues)                            | navigates to the **Submitted Page**                                                |
+| Scenario                                 | Issues present           | Primary CTA   | CTA enabled when                                       | On click ?                                                                        |
+| ---------------------------------------- | ------------------------ | ------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| **A � Needs revision** (given `v2` mock) | critical + major + minor | **Re-upload** | all critical **and** major issues are checked/resolved | conceptually goes to Upload ? Processing ? new Review Out Of Scope; we stop here) |
+| **B � Clean** (minor-only mock)          | minor only               | **Submit**    | always (no blocking issues)                            | navigates to the **Submitted Page**                                               |
 
 See `05-open-questions-and-production.md` for the full rationale and the resolved
 decision list.

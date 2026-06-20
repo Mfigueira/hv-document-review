@@ -20,10 +20,10 @@ export function UploadPage() {
             />
           </svg>
         </div>
-        <h1 className="text-xl font-semibold text-gray-700">Upload — Out of Scope</h1>
+        <h1 className="text-xl font-semibold text-gray-700">Upload — Out Of Scope</h1>
         <p className="mt-2 text-sm text-gray-500">
           This page is a placeholder. The Upload and Processing pages are owned by another team and
-          are Out of Scope for this challenge.
+          are Out Of Scope for this challenge.
         </p>
         <p className="mt-2 text-xs text-gray-400">
           In the full flow: Upload &rarr; Processing &rarr; Review (new version).

@@ -61,7 +61,7 @@ Document on the left (primary, large), issues panel docked on the right. Classic
 
 - The CTA reads **Re-upload** and is **disabled (?)** until all 12 critical+major
   boxes are checked. Once cleared: `[ Re-upload ? ]` enabled ? clicking shows a
-  small "heading to Upload ? Processing (Out of Scope)" note.
+  small "heading to Upload ? Processing (Out Of Scope)" note.
 
 ### Desktop � Scenario B (clean: minor only)
 

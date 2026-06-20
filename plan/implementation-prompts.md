@@ -83,7 +83,7 @@ DO THE FOLLOWING:
      "/processing" -> pages/ProcessingPage.tsx (out-of-scope stub).
    - For now ReviewPage can render the loaded review's name/version/status and a
      placeholder for the two panes; SubmittedPage/Upload/Processing are simple
-     stubs (Upload/Processing clearly say "Out of Scope � placeholder").
+     stubs (Upload/Processing clearly say "Out Of Scope � placeholder").
 10. Header.tsx shows: product name "Document Review", file name, v{version},
     status badge, assignee (first + last name). Footer.tsx minimal.
 11. Make the shell responsive (mobile-first) with a two-column layout placeholder
