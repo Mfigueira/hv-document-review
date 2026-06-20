@@ -1,9 +1,10 @@
-# 01  Challenge Analysis
+# 01 ï¿½ Challenge Analysis
 
 Source material lives in `challenge-spec/`:
-- `challenge-description.pdf`  the brief + ticket + acceptance criteria.
-- `review_mock.json`  the mocked API response we build against.
-- `example_document.pdf`  the document the review refers to (34 pages).
+
+- `challenge-description.pdf` ï¿½ the brief + ticket + acceptance criteria.
+- `review_mock.json` ï¿½ the mocked API response we build against.
+- `example_document.pdf` ï¿½ the document the review refers to (34 pages).
 
 ## 1. The product context
 
@@ -25,6 +26,7 @@ Upload ??? Processing ??? Review ??? Submitted
 
 Per the brief, a user does **not** edit the document inside our app. To resolve a
 blocking issue they:
+
 1. Go back to their own system,
 2. Fix the issue and generate a **new document**,
 3. Upload the new version into the app,
@@ -50,11 +52,11 @@ switches between these two demo scenarios. See
 
 Issues are classified into three severities:
 
-| Severity | Blocks submission? | Meaning |
-|----------|-------------------|---------|
-| `critical` | **Yes** | Must be fixed (re-upload) before submitting. |
-| `major`    | **Yes** | Must be fixed (re-upload) before submitting. |
-| `minor`    | No | Can be ignored; a review with only minor issues can be submitted. |
+| Severity   | Blocks submission? | Meaning                                                           |
+| ---------- | ------------------ | ----------------------------------------------------------------- |
+| `critical` | **Yes**            | Must be fixed (re-upload) before submitting.                      |
+| `major`    | **Yes**            | Must be fixed (re-upload) before submitting.                      |
+| `minor`    | No                 | Can be ignored; a review with only minor issues can be submitted. |
 
 **The rule:** A review can be submitted **iff** there are **zero unresolved
 critical and major issues**. Minor issues never block.
@@ -63,8 +65,8 @@ critical and major issues**. Minor issues never block.
 
 - **4 critical**, **8 major**, **13 minor** = **25 total** issues.
 - ? With this dataset as-is, the review is **blocked** (12 blocking issues).
-- This matters for the demo: the default data shows the *blocked* state. We need
-  a way to also showcase the *submittable* state (see doc 5).
+- This matters for the demo: the default data shows the _blocked_ state. We need
+  a way to also showcase the _submittable_ state (see doc 5).
 
 ## 4. Acceptance criteria (verbatim ? our interpretation)
 
@@ -73,7 +75,7 @@ critical and major issues**. Minor issues never block.
    - Render the full 34-page PDF.
    - Pressing **Cmd/Ctrl+F** opens a search box and finds matches across **all**
      pages (not just the visible/rendered ones), with next/prev navigation and
-     match highlighting. This is the trickiest requirement  see `02-architecture.md`.
+     match highlighting. This is the trickiest requirement ï¿½ see `02-architecture.md`.
 
 2. **"Users cannot submit the review until all critical and major issues are
    resolved. Minor issues may be ignored."**
@@ -84,7 +86,7 @@ critical and major issues**. Minor issues never block.
      critical/major issues remain and what to do about them. Each blocking issue
      should be easy to find and jump to in the document.
 
-4. **"The design is up to you."**  We own the UX (see doc 3).
+4. **"The design is up to you."** ï¿½ We own the UX (see doc 3).
 
 ## 5. Data model (from `review_mock.json`)
 
@@ -105,12 +107,12 @@ export interface Issue {
 
 export interface DocumentPage {
   page_num: number; // 1-based
-  height: number;   // points
-  width: number;    // points
+  height: number; // points
+  width: number; // points
 }
 
 export interface ReviewDocument {
-  pdf_url: string;          // we replace example.com URL with a local static file
+  pdf_url: string; // we replace example.com URL with a local static file
   pages: DocumentPage[];
 }
 
@@ -122,8 +124,8 @@ export interface ReviewUser {
 
 export interface Review {
   id: string;
-  name: string;          // file name, e.g. "Annual Compliance Report..."
-  uploaded_at: string;   // ISO datetime of latest version upload
+  name: string; // file name, e.g. "Annual Compliance Report..."
+  uploaded_at: string; // ISO datetime of latest version upload
   status: ReviewStatus;
   version: number;
   document: ReviewDocument;
@@ -136,23 +138,23 @@ export interface Review {
 
 - `document.pdf_url` points at `https://example.com/...`. Per the brief we
   **replace it with the local static file** (`/example_document.pdf` in `public/`).
-- Page sizes are uniform `612  792` (US Letter)  useful for sizing/placeholders.
+- Page sizes are uniform `612 ï¿½ 792` (US Letter) ï¿½ useful for sizing/placeholders.
 - Multiple issues can point at the **same page** (e.g. issues 3, 6, 20 ? page 14).
   The UI should handle multiple markers per page.
-- `status` is `on_review` in the mock  the state where the Review Page is active.
+- `status` is `on_review` in the mock ï¿½ the state where the Review Page is active.
 
 ## 6. Derived values the UI needs
 
 ```ts
 const counts = {
-  critical: issues.filter(i => i.severity === 'critical').length,
-  major:    issues.filter(i => i.severity === 'major').length,
-  minor:    issues.filter(i => i.severity === 'minor').length,
+  critical: issues.filter((i) => i.severity === 'critical').length,
+  major: issues.filter((i) => i.severity === 'major').length,
+  minor: issues.filter((i) => i.severity === 'minor').length,
 };
 
 // resolvedIds = issue ids the user checked off (persisted in localStorage)
-const blockingIssues = issues.filter(i => i.severity !== 'minor');
-const blockingRemaining = blockingIssues.filter(i => !resolvedIds.has(i.id)).length;
+const blockingIssues = issues.filter((i) => i.severity !== 'minor');
+const blockingRemaining = blockingIssues.filter((i) => !resolvedIds.has(i.id)).length;
 
 // CTA is context-dependent (see doc 2 + doc 5/Q1):
 const ctaMode = blockingIssues.length === 0 ? 'submit' : 'reupload';
@@ -162,12 +164,14 @@ const canProceed = ctaMode === 'submit' ? true : blockingRemaining === 0;
 ## 7. Scope
 
 In scope:
+
 - The **Review Page** (the ticket).
 - A **minimal Submitted Page** (check icon + title + doc name/version) reached
   when the "Submit" CTA is used in the clean scenario.
 - A small **dev panel** to switch demo scenarios (needs-revision vs clean).
 
-Out of scope (explicitly):
+Out of Scope (explicitly):
+
 - The **Upload** and **Processing** pages. The "Re-upload" CTA routes to a tiny
   `/upload` placeholder stub. We scaffold `/upload` + `/processing` routes (via
   react-router) so the structure is ready to support the full flow, but we do not
